@@ -115,3 +115,46 @@ WHERE o.order_status = 'delivered'
 GROUP BY state
 ORDER BY revenue DESC
 LIMIT 10;
+
+-- ==========================================
+-- Q5) What is the average order value, overall and by state?
+-- Average order value (AOV) = total revenue / number of orders.
+-- Note: AVG(price) is the average ITEM price, which is not the same thing.
+-- ==========================================
+
+-- Q5a) Overall average order value vs average item price (delivered orders)
+SELECT ROUND(SUM(i.price) / COUNT(DISTINCT o.order_id), 2) AS avg_order_value,
+       ROUND(AVG(i.price), 2) AS avg_item_price
+FROM olist.order_items i
+JOIN olist.orders o
+  ON i.order_id = o.order_id
+WHERE o.order_status = 'delivered';
+
+-- Q5b) Average order value per customer state (all states)
+SELECT c.customer_state AS state,
+       COUNT(DISTINCT o.order_id) AS orders,
+       ROUND(SUM(i.price) / COUNT(DISTINCT o.order_id), 2) AS avg_order_value
+FROM olist.order_items i
+JOIN olist.orders o
+  ON i.order_id = o.order_id
+JOIN olist.customers c
+  ON o.customer_id = c.customer_id
+WHERE o.order_status = 'delivered'
+GROUP BY state
+ORDER BY avg_order_value DESC;
+
+-- Q5c) Same, but only states with at least 100 delivered orders
+-- Why: an average based on a handful of orders is not reliable.
+-- HAVING filters AFTER the groups are made (WHERE filters BEFORE).
+SELECT c.customer_state AS state,
+       COUNT(DISTINCT o.order_id) AS orders,
+       ROUND(SUM(i.price) / COUNT(DISTINCT o.order_id), 2) AS avg_order_value
+FROM olist.order_items i
+JOIN olist.orders o
+  ON i.order_id = o.order_id
+JOIN olist.customers c
+  ON o.customer_id = c.customer_id
+WHERE o.order_status = 'delivered'
+GROUP BY state
+HAVING COUNT(DISTINCT o.order_id) >= 100
+ORDER BY avg_order_value DESC;
