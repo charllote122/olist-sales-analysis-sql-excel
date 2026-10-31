@@ -60,8 +60,8 @@ SELECT DATE_TRUNC('month', o.order_purchase_timestamp)::date AS month,
        COUNT(DISTINCT o.order_id) AS orders,
        SUM(i.price) AS revenue
 FROM olist.orders o
-JOIN olist.reviews r
-  ON o.order_id = r.order_id
+JOIN olist.order_items i
+  ON o.order_id = i.order_id
 WHERE o.order_status = 'delivered'
 GROUP BY month
 ORDER BY month;
