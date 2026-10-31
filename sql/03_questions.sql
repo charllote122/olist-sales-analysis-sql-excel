@@ -41,3 +41,28 @@ WHERE o.order_status = 'delivered';
 
    -- Q1 ANSWER: 96,478 delivered orders, revenue 13,221,498.11
    -- (COUNT(DISTINCT) is needed because an order can have several items)
+
+
+-- ==========================================
+-- Q2) What are orders and revenue per month?
+-- ==========================================
+
+-- Q2a) Delivered orders per month
+SELECT DATE_TRUNC('month', order_purchase_timestamp)::date AS month,
+       COUNT(*) AS orders
+FROM olist.orders
+WHERE order_status = 'delivered'
+GROUP BY month
+ORDER BY month;
+
+-- Q2b) Delivered orders and revenue per month
+SELECT DATE_TRUNC('month', o.order_purchase_timestamp)::date AS month,
+       COUNT(DISTINCT o.order_id) AS orders,
+       SUM(i.price) AS revenue
+FROM olist.orders o
+JOIN olist.reviews r
+  ON o.order_id = r.order_id
+WHERE o.order_status = 'delivered'
+GROUP BY month
+ORDER BY month;
+
