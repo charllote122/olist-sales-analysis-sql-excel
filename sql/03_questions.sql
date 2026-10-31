@@ -101,3 +101,17 @@ WHERE o.order_status = 'delivered'
 GROUP BY category
 ORDER BY revenue DESC
 LIMIT 10;
+
+-- Q4) Delivered orders and revenue per customer state
+SELECT c.customer_state AS state,
+       COUNT(DISTINCT o.order_id) AS orders,
+       SUM(i.price) AS revenue
+FROM olist.order_items i
+JOIN olist.orders o
+  ON i.order_id = o.order_id
+JOIN olist.customers c
+  ON o.customer_id = c.customer_id
+WHERE o.order_status = 'delivered'
+GROUP BY state
+ORDER BY revenue DESC
+LIMIT 10;
