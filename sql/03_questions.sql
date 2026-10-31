@@ -66,3 +66,38 @@ WHERE o.order_status = 'delivered'
 GROUP BY month
 ORDER BY month;
 
+-- Q3a) Preview: each item with its product category
+SELECT i.order_id, i.price, p.product_category_name
+FROM olist.order_items i
+JOIN olist.products p
+  ON i.product_id = p.product_id
+LIMIT 10;
+
+-- Q3b) Preview: each item with its English category (keeping untranslated ones)
+SELECT i.price,
+       COALESCE(t.product_category_name_english,
+                p.product_category_name,
+                'unknown') AS category
+FROM olist.order_items i
+JOIN olist.products p
+  ON i.product_id = p.product_id
+LEFT JOIN olist.product_category_translation t
+  ON p.product_category_name = t.product_category_name
+LIMIT 10;
+
+-- Q3c) Top 10 product categories by revenue (delivered orders)
+SELECT COALESCE(t.product_category_name_english,
+                p.product_category_name,
+                'unknown') AS category,
+       SUM(i.price) AS revenue
+FROM olist.order_items i
+JOIN olist.orders o
+  ON i.order_id = o.order_id
+JOIN olist.products p
+  ON i.product_id = p.product_id
+LEFT JOIN olist.product_category_translation t
+  ON p.product_category_name = t.product_category_name
+WHERE o.order_status = 'delivered'
+GROUP BY category
+ORDER BY revenue DESC
+LIMIT 10;
