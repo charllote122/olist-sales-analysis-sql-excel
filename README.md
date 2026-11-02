@@ -4,7 +4,7 @@ Analysis of about 100,000 real e-commerce orders to answer 10 business questions
 
 ## Data
 
-[Brazilian E-Commerce Public Dataset by Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) (Kaggle): orders placed between 2016 and 2018 across eight linked tables (customers, orders, order items, payments, reviews, products, sellers, category translations). Raw files are not stored in this repository; check the dataset licence on Kaggle before reuse.
+[Brazilian E-Commerce Public Dataset by Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) (Kaggle): orders placed between 2016 and 2018 across eight linked tables (customers, orders, order items, payments, reviews, products, sellers, category translations). Raw files are not stored in this repository; check the dataset licence on Kaggle before reuse. Amounts are in Brazilian reais (BRL).
 
 ## Tools
 
@@ -33,6 +33,16 @@ PostgreSQL, VS Code (SQLTools), Excel, Git
 
 Queries and answers: [`sql/03_questions.sql`](sql/03_questions.sql)
 
+## Charts
+
+Built in Excel from the SQL results ([`excel/olist-analysis.xlsx`](excel/olist-analysis.xlsx)).
+
+![Monthly orders and revenue](images/01-monthly-orders-revenue.png)
+
+![Top 10 categories by revenue](images/02-top-categories.png)
+
+![Top 10 states by revenue](images/03-top-states.png)
+
 ## Method and data quality
 
 - **Revenue** is the sum of item prices for delivered orders, excluding freight. **Average order value** is revenue divided by distinct orders.
@@ -54,7 +64,8 @@ sql/
   01_create_tables.sql   schema, tables and data load
   02_explore.sql         data quality checks
   03_questions.sql       the 10 business questions
-excel/                   charts built on the SQL results (in progress)
+excel/                   workbook with the three charts
+images/                  chart images used in this README
 data/                    raw CSV files (not in the repo)
 ```
 
@@ -64,3 +75,7 @@ data/                    raw CSV files (not in the repo)
 2. Create the database: `psql -U postgres -c "CREATE DATABASE olist_dataset;"`
 3. From the repository root: `psql -U postgres -d olist_dataset -f sql/01_create_tables.sql`
 4. Run `sql/02_explore.sql` and `sql/03_questions.sql` in any SQL client.
+
+## Author
+
+[charllote122](https://github.com/charllote122)
